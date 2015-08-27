@@ -51,11 +51,10 @@ class HTTPRequest {
 
 	public static enum RequestType {GET, POST};
 	private RequestType type = RequestType.GET;
+	private boolean insecure = false;
 
 	private HttpUriRequest req = null;
 	private HttpEntity entity = null;
-	
-	private boolean insecure = false;
 
 	public HTTPRequest(String url) {
 		this.url =  url;
@@ -80,11 +79,11 @@ class HTTPRequest {
 	HttpUriRequest getReq() {
 		return req;
 	}
-	
+
 	public boolean isInsecure() {
 		return insecure;
 	}
-	
+
 	public void setInsecure(boolean insecure) {
 		this.insecure = insecure;
 	}
@@ -168,7 +167,6 @@ class HTTPRequest {
 			}
 		}, new SecureRandom());
 
-		//SSLSocketFactory sf = new SSLSocketFactory(sslContext, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 		SSLSocketFactory sf = new SSLSocketFactory(sslContext, new AllowAllHostnameVerifier());
 		Scheme httpsScheme = new Scheme("https", 443, sf);
 		SchemeRegistry schemeRegistry = new SchemeRegistry();

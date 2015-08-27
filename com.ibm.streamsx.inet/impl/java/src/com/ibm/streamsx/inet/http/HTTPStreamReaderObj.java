@@ -64,7 +64,6 @@ class HTTPStreamReaderObj implements Runnable
 			req.setHeader("Accept-Encoding", "identity");
 		}
 		req.setParams(postData);
-		
 		req.setInsecure(insecure);
 	}
 	
