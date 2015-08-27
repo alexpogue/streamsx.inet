@@ -36,7 +36,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.conn.BasicClientConnectionManager;
-import org.apache.http.impl.conn.SingleClientConnManager;
 
 class HTTPRequest {
 
@@ -170,13 +169,12 @@ class HTTPRequest {
 		}, new SecureRandom());
 
 		//SSLSocketFactory sf = new SSLSocketFactory(sslContext, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		SSLSocketFactory sf = new SSLSocketFactory(sslContext);
-		sf.setHostnameVerifier(new AllowAllHostnameVerifier());
+		SSLSocketFactory sf = new SSLSocketFactory(sslContext, new AllowAllHostnameVerifier());
 		Scheme httpsScheme = new Scheme("https", 443, sf);
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		schemeRegistry.register(httpsScheme);
 
-		ClientConnectionManager cm = new SingleClientConnManager(schemeRegistry);
+		ClientConnectionManager cm = new BasicClientConnectionManager(schemeRegistry);
 
 		return new DefaultHttpClient(cm);
 	}
