@@ -47,6 +47,8 @@ public abstract class AbstractHTTPGetContent<A> extends
     protected int contentAttributeIndex;
 
     private Metric nFailedRequests;
+    
+    boolean acceptAllCertificates = false;
 
     public String getUrl() {
         return url;
@@ -56,11 +58,18 @@ public abstract class AbstractHTTPGetContent<A> extends
     public void setUrl(String url) {
         this.url = url;
     }
-    
+
     @Parameter(optional = true, description = "Extra headers to send with request, format is \\\"Header-Name: value\\\"")
     public void setExtraHeaders(List<String> extraHeaders) {
     	this.extraHeaders = extraHeaders;
     }
+    
+	@Parameter(optional = true, 
+			description = "Accept all SSL certificates, even those that are self-signed. " +
+			"Setting this option will allow potentially insecure connections. Default is false.")
+	public void setAcceptAllCertificates(boolean acceptAllCertificates) {
+		this.acceptAllCertificates = acceptAllCertificates;
+	}
 
     public Metric getnFailedRequests() {
         return nFailedRequests;
@@ -81,7 +90,11 @@ public abstract class AbstractHTTPGetContent<A> extends
     public synchronized void initialize(OperatorContext context)
             throws Exception {
         super.initialize(context);
-        client = new DefaultHttpClient();
+        if(acceptAllCertificates)
+        	client = HTTPUtils.getHttpClientWithNoSSLValidation();
+        else
+        	client = new DefaultHttpClient();
+        
         builder = new URIBuilder(getUrl());
         get = new HttpGet(builder.build());
         get.addHeader("Accept", acceptedContentTypes());
