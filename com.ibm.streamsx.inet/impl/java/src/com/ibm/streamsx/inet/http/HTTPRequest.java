@@ -19,6 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -36,7 +37,7 @@ class HTTPRequest {
 	private Map<String, String> headers =
 			new HashMap<String, String> ();
 
-	public static enum RequestType {GET, POST};
+	public static enum RequestType {GET, POST, PUT};
 	private RequestType type = RequestType.GET;
 	private boolean insecure = false;
 
@@ -120,6 +121,12 @@ class HTTPRequest {
 		if(type == RequestType.GET) {
 			HttpGet get = new HttpGet(url);
 			req=get;
+		}
+		else if(type == RequestType.PUT) {
+			HttpPut put = new HttpPut(url);
+			if(entity != null)
+				put.setEntity(entity);
+			req = put;
 		}
 		else {
 			HttpPost post = new HttpPost(url);
